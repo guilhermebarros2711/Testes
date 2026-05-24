@@ -1,130 +1,131 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   ScrollView,
- TextInput,
+  TextInput,
 } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function App() {
+import TaskCard from './components/TaskCard';
 
-  const [tasks, setTasks] = useState([]);
+export default function App() {
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      title: 'Estudar React Native',
+      done: true,
+      category: 'Programação',
+      color: '#8B5CF6',
+    },
+    {
+      id: 2,
+      title: 'Fazer atividade da escola',
+      done: false,
+      category: 'Escola',
+      color: '#3B82F6',
+    },
+  ]);
 
   const [newTask, setNewTask] = useState('');
-useEffect(() => {
-  loadTasks();
-}, []);
 
-useEffect(() => {
-  saveTasks();
-}, [tasks]);
-
-async function saveTasks() {
-
-  try {
-
-    const jsonValue = JSON.stringify(tasks);
-
-    await AsyncStorage.setItem(
-      '@tasks',
-      jsonValue
-    );
-
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function loadTasks() {
-
-  try {
-
-    const storedTasks = await AsyncStorage.getItem('@tasks');
-
-    if (storedTasks !== null) {
-      setTasks(JSON.parse(storedTasks));
+  const saveTasks = useCallback(async (tasksToSave) => {
+    try {
+      const jsonValue = JSON.stringify(tasksToSave);
+      await AsyncStorage.setItem('@tasks', jsonValue);
+    } catch (error) {
+      console.log(error);
     }
+  }, []);
 
-  } catch (error) {
-    console.log(error);
-  }
-}
+  const loadTasks = useCallback(async () => {
+    try {
+      const storedTasks = await AsyncStorage.getItem('@tasks');
+
+      if (storedTasks) {
+        setTasks(JSON.parse(storedTasks));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
+
+  useEffect(() => {
+    saveTasks(tasks);
+  }, [tasks, saveTasks]);
+
   function addTask() {
+    if (newTask.trim() === '') return;
 
-    if (newTask.trim() === '') {
-      return;
-    }
+    const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
+
+    const categories = ['Programação', 'Escola', 'Saúde', 'Pessoal', 'Trabalho'];
+
+    const randomIndex = Math.floor(Math.random() * categories.length);
 
     const newItem = {
       id: Date.now(),
       title: newTask,
       done: false,
+      category: categories[randomIndex],
+      color: colors[randomIndex],
     };
 
-    setTasks([...tasks, newItem]);
-
+    setTasks((prev) => [...prev, newItem]);
     setNewTask('');
   }
 
   function toggleTask(id) {
-
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === id) {
-        return {
-          ...task,
-          done: !task.done,
-        };
-      }
-
-      return task;
-    });
-
-    setTasks(updatedTasks);
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? { ...task, done: !task.done } : task
+      )
+    );
   }
-function removeTask(id) {
 
-  const filteredTasks = tasks.filter(
-    (task) => task.id !== id
-  );
+  function removeTask(id) {
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+  }
 
-  setTasks(filteredTasks);
-}
-  const completedTasks = tasks.filter(task => task.done).length;
-  const progress = (completedTasks / tasks.length) * 100;
+  const completedTasks = tasks.filter((task) => task.done).length;
+
+  const progress =
+    tasks.length > 0 ? (completedTasks / tasks.length) * 100 : 0;
 
   return (
     <ScrollView style={styles.container}>
-
       <Text style={styles.title}>StudyFlow 📚</Text>
 
       <View style={styles.progressCard}>
-       <Text style={styles.progressText}>
-  {Math.round(progress)}% concluído
-</Text>
+        <Text style={styles.progressText}>
+          {Math.round(progress)}% concluído
+        </Text>
+
         <View style={styles.progressBarBackground}>
-
-  <LinearGradient
-    colors={['#6366F1', '#8B5CF6']}
-    start={{ x: 0, y: 0 }}
-    end={{ x: 1, y: 0 }}
-    style={{
-      width: `${progress}%`,
-      height: '100%',
-      borderRadius: 20,
-    }}
-  />
-
-</View>
+          <LinearGradient
+            colors={['#6366F1', '#8B5CF6']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{
+              width: `${progress}%`,
+              height: '100%',
+              borderRadius: 20,
+            }}
+          />
+        </View>
       </View>
 
       <View style={styles.inputContainer}>
-
         <TextInput
           placeholder="Nova tarefa..."
           placeholderTextColor="#94A3B8"
@@ -133,52 +134,24 @@ function removeTask(id) {
           onChangeText={setNewTask}
         />
 
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={addTask}
-        >
+        <TouchableOpacity style={styles.addButton} onPress={addTask}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
-
       </View>
 
       {tasks.map((task) => (
-
-        <TouchableOpacity
+        <TaskCard
           key={task.id}
-          style={styles.taskCard}
-          onPress={() => toggleTask(task.id)}
-          onLongPress={() => removeTask(task.id)}
-        >
-
-          <Text
-            style={[
-              styles.taskText,
-              task.done && styles.completedText,
-            ]}
-          >
-            {task.title}
-          </Text>
-
-          <View
-            style={[
-              styles.status,
-              task.done
-                ? styles.done
-                : styles.pending,
-            ]}
-          />
-
-        </TouchableOpacity>
-
+          task={task}
+          toggleTask={toggleTask}
+          removeTask={removeTask}
+        />
       ))}
-
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: '#0F172A',
@@ -214,12 +187,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
 
-  progressBarFill: {
-    height: '100%',
-    backgroundColor: '#8B5CF6',
-    borderRadius: 20,
-  },
-
   inputContainer: {
     flexDirection: 'row',
     marginBottom: 25,
@@ -248,41 +215,4 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
   },
-
-  taskCard: {
-    backgroundColor: '#172033',
-    padding: 20,
-    borderRadius: 18,
-    marginBottom: 15,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
-  taskText: {
-    color: '#FFFFFF',
-    fontSize: 17,
-    width: '85%',
-  },
-
-  completedText: {
-    textDecorationLine: 'line-through',
-    opacity: 0.5,
-  },
-
-  status: {
-    width: 22,
-    height: 22,
-    borderRadius: 20,
-  },
-
-  done: {
-    backgroundColor: '#8B5CF6',
-  },
-
-  pending: {
-    borderWidth: 3,
-    borderColor: '#475569',
-  },
-
 });
