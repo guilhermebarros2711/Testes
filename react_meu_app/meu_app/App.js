@@ -65,21 +65,45 @@ export default function App() {
   }, [tasks, saveTasks]);
 
   function addTask() {
-    if (newTask.trim() === '') return;
+  if (newTask.trim() === '') return;
 
-    const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
+  const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
 
-    const categories = ['Programação', 'Escola', 'Saúde', 'Pessoal', 'Trabalho'];
+  const categories = ['Programação', 'Escola', 'Saúde', 'Pessoal', 'Trabalho'];
 
-    const randomIndex = Math.floor(Math.random() * categories.length);
+  const randomIndex = Math.floor(Math.random() * categories.length);
 
-    const newItem = {
-      id: Date.now(),
-      title: newTask,
-      done: false,
-      category: categories[randomIndex],
-      color: colors[randomIndex],
-    };
+  const newItem = {
+    id: Date.now(),
+    title: newTask,
+    done: false,
+    category: categories[randomIndex],
+    color: colors[randomIndex],
+  };
+
+  setTasks((prev) => [...prev, newItem]);
+  setNewTask('');
+}
+
+const categories = [
+  'Programação',
+  'Escola',
+  'Saúde',
+  'Pessoal',
+  'Trabalho',
+];
+
+const randomIndex = Math.floor(
+  Math.random() * categories.length
+);
+
+const newItem = {
+  id: Date.now(),
+  title: newTask,
+  done: false,
+  category: categories[randomIndex],
+  color: colors[randomIndex],
+};
 
     setTasks((prev) => [...prev, newItem]);
     setNewTask('');
@@ -149,7 +173,6 @@ export default function App() {
       ))}
     </ScrollView>
   );
-}
 
 const styles = StyleSheet.create({
   container: {

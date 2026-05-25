@@ -1,6 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
+import Animated, {
+  FadeIn,
+  FadeOut,
+  Layout,
+} from 'react-native-reanimated';
+
 export default function TaskCard({
   task,
   toggleTask,
@@ -8,10 +14,16 @@ export default function TaskCard({
 }) {
 
   return (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => toggleTask(task.id)}
-      onLongPress={() => removeTask(task.id)}
+    <Animated.View
+  entering={FadeIn}
+  exiting={FadeOut}
+  layout={Layout.springify()}
+>
+
+  <TouchableOpacity
+    style={styles.card}
+    onPress={() => toggleTask(task.id)}
+    onLongPress={() => removeTask(task.id)}
     >
 
       <Text
@@ -32,7 +44,9 @@ export default function TaskCard({
         ]}
       />
 
-    </TouchableOpacity>
+      </TouchableOpacity>
+
+</Animated.View>
   );
 }
 
