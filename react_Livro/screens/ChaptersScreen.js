@@ -11,7 +11,9 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function ChaptersScreen() {
+export default function ChaptersScreen({
+  navigation,
+}) {
 
   const [chapters, setChapters] = useState([
     {
@@ -110,16 +112,23 @@ export default function ChaptersScreen() {
 
       {chapters.map((chapter) => (
 
-        <View
-          key={chapter.id}
-          style={styles.chapterCard}
-        >
+        <TouchableOpacity
+  key={chapter.id}
+  style={styles.chapterCard}
+
+  onPress={() =>
+    navigation.navigate(
+      'Editor',
+      { chapter }
+    )
+  }
+>
 
           <Text style={styles.chapterTitle}>
             {chapter.title}
           </Text>
 
-        </View>
+        </TouchableOpacity>
 
       ))}
 
