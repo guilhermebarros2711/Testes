@@ -91,13 +91,13 @@ export default function ChaptersScreen({
     <ScrollView style={styles.container}>
 
       <Text style={styles.header}>
-        Chapters
+        Capítulo
       </Text>
 
       <View style={styles.inputContainer}>
 
         <TextInput
-          placeholder="New chapter..."
+          placeholder="Novo capítulo..."
           placeholderTextColor="#777"
           style={styles.input}
           value={newChapter}
