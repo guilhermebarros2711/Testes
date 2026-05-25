@@ -39,10 +39,16 @@ export default function HomeScreen({
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.card}>
-        <Text style={styles.cardTitle}>
-          👤 Personagens
-        </Text>
+      <TouchableOpacity
+  style={styles.card}
+
+  onPress={() =>
+    navigation.navigate('Characters')
+  }
+>
+  <Text style={styles.cardTitle}>
+    👤 Characters
+  </Text>
 
         <Text style={styles.cardDescription}>
           Explore os "Herois", Deuses e outros personagens da história.

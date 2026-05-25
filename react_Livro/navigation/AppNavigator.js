@@ -11,7 +11,7 @@ import ChaptersScreen from '../screens/ChaptersScreen';
 
 import EditorScreen from '../screens/EditorScreen';
 
-
+import CharactersScreen from '../screens/CharactersScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,10 +48,15 @@ export default function AppNavigator() {
           name="Chapters"
           component={ChaptersScreen}
         />
+
         <Stack.Screen
-          name="Editor"
-         component={EditorScreen}
-         />
+          name="Characters"
+          component={CharactersScreen}
+        />
+        <Stack.Screen
+  name="Editor"
+  component={EditorScreen}
+/>
       </Stack.Navigator>
 
     </NavigationContainer>
