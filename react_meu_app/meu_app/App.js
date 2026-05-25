@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskCard from './components/TaskCard';
 
 export default function App() {
+
   const [tasks, setTasks] = useState([
     {
       id: 1,
@@ -36,24 +37,36 @@ export default function App() {
   const [newTask, setNewTask] = useState('');
 
   const saveTasks = useCallback(async (tasksToSave) => {
+
     try {
+
       const jsonValue = JSON.stringify(tasksToSave);
-      await AsyncStorage.setItem('@tasks', jsonValue);
+
+      await AsyncStorage.setItem(
+        '@tasks',
+        jsonValue
+      );
+
     } catch (error) {
       console.log(error);
     }
+
   }, []);
 
   const loadTasks = useCallback(async () => {
+
     try {
+
       const storedTasks = await AsyncStorage.getItem('@tasks');
 
       if (storedTasks) {
         setTasks(JSON.parse(storedTasks));
       }
+
     } catch (error) {
       console.log(error);
     }
+
   }, []);
 
   useEffect(() => {
@@ -65,77 +78,85 @@ export default function App() {
   }, [tasks, saveTasks]);
 
   function addTask() {
-  if (newTask.trim() === '') return;
 
-  const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
+    if (newTask.trim() === '') return;
 
-  const categories = ['Programação', 'Escola', 'Saúde', 'Pessoal', 'Trabalho'];
+    const colors = [
+      '#8B5CF6',
+      '#3B82F6',
+      '#10B981',
+      '#F59E0B',
+      '#EF4444',
+    ];
 
-  const randomIndex = Math.floor(Math.random() * categories.length);
+    const categories = [
+      'Programação',
+      'Escola',
+      'Saúde',
+      'Pessoal',
+      'Trabalho',
+    ];
 
-  const newItem = {
-    id: Date.now(),
-    title: newTask,
-    done: false,
-    category: categories[randomIndex],
-    color: colors[randomIndex],
-  };
+    const randomIndex = Math.floor(
+      Math.random() * categories.length
+    );
 
-  setTasks((prev) => [...prev, newItem]);
-  setNewTask('');
-}
-
-const categories = [
-  'Programação',
-  'Escola',
-  'Saúde',
-  'Pessoal',
-  'Trabalho',
-];
-
-const randomIndex = Math.floor(
-  Math.random() * categories.length
-);
-
-const newItem = {
-  id: Date.now(),
-  title: newTask,
-  done: false,
-  category: categories[randomIndex],
-  color: colors[randomIndex],
-};
+    const newItem = {
+      id: Date.now(),
+      title: newTask,
+      done: false,
+      category: categories[randomIndex],
+      color: colors[randomIndex],
+    };
 
     setTasks((prev) => [...prev, newItem]);
+
     setNewTask('');
   }
 
   function toggleTask(id) {
+
     setTasks((prev) =>
       prev.map((task) =>
-        task.id === id ? { ...task, done: !task.done } : task
+        task.id === id
+          ? { ...task, done: !task.done }
+          : task
       )
     );
   }
 
   function removeTask(id) {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+
+    setTasks((prev) =>
+      prev.filter((task) => task.id !== id)
+    );
   }
 
-  const completedTasks = tasks.filter((task) => task.done).length;
+  const completedTasks = tasks.filter(
+    (task) => task.done
+  ).length;
 
   const progress =
-    tasks.length > 0 ? (completedTasks / tasks.length) * 100 : 0;
+    tasks.length > 0
+      ? (completedTasks / tasks.length) * 100
+      : 0;
 
   return (
+
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>StudyFlow 📚</Text>
+
+      <Text style={styles.title}>
+        StudyFlow 📚
+      </Text>
 
       <View style={styles.progressCard}>
+
         <Text style={styles.progressText}>
           {Math.round(progress)}% concluído
         </Text>
 
         <View style={styles.progressBarBackground}>
+
           <LinearGradient
             colors={['#6366F1', '#8B5CF6']}
             start={{ x: 0, y: 0 }}
@@ -146,10 +167,13 @@ const newItem = {
               borderRadius: 20,
             }}
           />
+
         </View>
+
       </View>
 
       <View style={styles.inputContainer}>
+
         <TextInput
           placeholder="Nova tarefa..."
           placeholderTextColor="#94A3B8"
@@ -158,23 +182,37 @@ const newItem = {
           onChangeText={setNewTask}
         />
 
-        <TouchableOpacity style={styles.addButton} onPress={addTask}>
-          <Text style={styles.addButtonText}>+</Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={addTask}
+        >
+
+          <Text style={styles.addButtonText}>
+            +
+          </Text>
+
         </TouchableOpacity>
+
       </View>
 
       {tasks.map((task) => (
+
         <TaskCard
           key={task.id}
           task={task}
           toggleTask={toggleTask}
           removeTask={removeTask}
         />
+
       ))}
+
     </ScrollView>
+
   );
+}
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: '#0F172A',
@@ -238,4 +276,5 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
   },
+
 });
