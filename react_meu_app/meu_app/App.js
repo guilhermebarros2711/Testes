@@ -36,6 +36,13 @@ export default function App() {
 
   const [newTask, setNewTask] = useState('');
 
+  const [selectedCategory, setSelectedCategory] =
+  useState('Escola');
+
+  const [xp, setXp] = useState(0);
+
+const [level, setLevel] = useState(1);
+
   const saveTasks = useCallback(async (tasksToSave) => {
 
     try {
@@ -89,24 +96,22 @@ export default function App() {
       '#EF4444',
     ];
 
-    const categories = [
-      'Programação',
-      'Escola',
-      'Saúde',
-      'Pessoal',
-      'Trabalho',
-    ];
-
-    const randomIndex = Math.floor(
-      Math.random() * categories.length
-    );
-
     const newItem = {
       id: Date.now(),
       title: newTask,
       done: false,
-      category: categories[randomIndex],
-      color: colors[randomIndex],
+     category: selectedCategory,
+
+color:
+  selectedCategory === 'Programação'
+    ? '#8B5CF6'
+    : selectedCategory === 'Escola'
+    ? '#3B82F6'
+    : selectedCategory === 'Saúde'
+    ? '#10B981'
+    : selectedCategory === 'Pessoal'
+    ? '#F59E0B'
+    : '#EF4444',
     };
 
     setTasks((prev) => [...prev, newItem]);
@@ -116,13 +121,33 @@ export default function App() {
 
   function toggleTask(id) {
 
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id
-          ? { ...task, done: !task.done }
-          : task
-      )
-    );
+  setTasks((prev) =>
+    prev.map((task) => {
+
+      if (task.id === id) {
+
+        const updatedDone = !task.done;
+
+        if (updatedDone) {
+
+          const gainedXp = xp + 10;
+
+          setXp(gainedXp);
+
+          if (gainedXp >= level * 100) {
+            setLevel(level + 1);
+          }
+        }
+
+        return {
+          ...task,
+          done: updatedDone,
+        };
+      }
+
+      return task;
+    })
+  );
   }
 
   function removeTask(id) {
@@ -148,6 +173,18 @@ export default function App() {
       <Text style={styles.title}>
         StudyFlow 📚
       </Text>
+
+      <View style={styles.levelCard}>
+
+  <Text style={styles.levelText}>
+    Level {level} 🚀
+  </Text>
+
+  <Text style={styles.xpText}>
+    {xp} XP
+  </Text>
+
+</View>
 
       <View style={styles.progressCard}>
 
@@ -194,6 +231,45 @@ export default function App() {
         </TouchableOpacity>
 
       </View>
+
+      <ScrollView
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  style={styles.categoriesContainer}
+>
+
+  {[
+    'Programação',
+    'Escola',
+    'Saúde',
+    'Pessoal',
+    'Trabalho',
+  ].map((category) => (
+
+    <TouchableOpacity
+      key={category}
+
+      style={[
+        styles.categoryButton,
+
+        selectedCategory === category &&
+          styles.categorySelected,
+      ]}
+
+      onPress={() =>
+        setSelectedCategory(category)
+      }
+    >
+
+      <Text style={styles.categoryButtonText}>
+        {category}
+      </Text>
+
+    </TouchableOpacity>
+
+  ))}
+
+</ScrollView>
 
       {tasks.map((task) => (
 
@@ -277,4 +353,45 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  levelCard: {
+  backgroundColor: '#172033',
+  padding: 18,
+  borderRadius: 18,
+  marginBottom: 20,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+},
+
+levelText: {
+  color: '#FFFFFF',
+  fontSize: 18,
+  fontWeight: 'bold',
+},
+
+xpText: {
+  color: '#8B5CF6',
+  fontSize: 18,
+  fontWeight: 'bold',
+},
+
+categoriesContainer: {
+  marginBottom: 20,
+},
+
+categoryButton: {
+  backgroundColor: '#1E293B',
+  paddingVertical: 10,
+  paddingHorizontal: 18,
+  borderRadius: 20,
+  marginRight: 10,
+},
+
+categorySelected: {
+  backgroundColor: '#8B5CF6',
+},
+
+categoryButtonText: {
+  color: '#FFFFFF',
+  fontWeight: 'bold',
+},
 });
