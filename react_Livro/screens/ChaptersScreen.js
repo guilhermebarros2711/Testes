@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
+ StyleSheet,
   ScrollView,
   TouchableOpacity,
   TextInput,
@@ -15,12 +15,7 @@ export default function ChaptersScreen({
   navigation,
 }) {
 
-  const [chapters, setChapters] = useState([
-    {
-      id: 1,
-      title: 'Chapter 1',
-    },
-  ]);
+  const [chapters, setChapters] = useState([]);
 
   const [newChapter, setNewChapter] = useState('');
 
@@ -74,9 +69,21 @@ export default function ChaptersScreen({
       title: newChapter,
     };
 
-    setChapters([...chapters, newItem]);
+    setChapters((prev) => [
+      ...prev,
+      newItem,
+    ]);
 
     setNewChapter('');
+  }
+
+  function removeChapter(id) {
+
+    const filtered = chapters.filter(
+      (chapter) => chapter.id !== id
+    );
+
+    setChapters(filtered);
   }
 
   return (
@@ -113,16 +120,20 @@ export default function ChaptersScreen({
       {chapters.map((chapter) => (
 
         <TouchableOpacity
-  key={chapter.id}
-  style={styles.chapterCard}
+          key={chapter.id}
+          style={styles.chapterCard}
 
-  onPress={() =>
-    navigation.navigate(
-      'Editor',
-      { chapter }
-    )
-  }
->
+          onPress={() =>
+            navigation.navigate(
+              'Editor',
+              { chapter }
+            )
+          }
+
+          onLongPress={() =>
+            removeChapter(chapter.id)
+          }
+        >
 
           <Text style={styles.chapterTitle}>
             {chapter.title}

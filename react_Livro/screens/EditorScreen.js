@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
 
   wordCount: {
-    color: '#8B0000',
+    color: '#ffffff',
     marginBottom: 20,
     fontSize: 15,
   },
