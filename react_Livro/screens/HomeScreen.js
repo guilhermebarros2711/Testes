@@ -21,7 +21,7 @@ export default function HomeScreen({
       </Text>
 
       <Text style={styles.subheader}>
-        Archive Sections
+        Seções Archive
       </Text>
 
       <TouchableOpacity

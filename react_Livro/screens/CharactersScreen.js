@@ -5,7 +5,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
+ TouchableOpacity,
   TextInput,
 } from 'react-native';
 
@@ -20,6 +20,10 @@ export default function CharactersScreen() {
   const [race, setRace] = useState('');
 
   const [power, setPower] = useState('');
+
+  const [description, setDescription] = useState('');
+
+  const [faction, setFaction] = useState('');
 
   useEffect(() => {
     loadCharacters();
@@ -77,6 +81,8 @@ export default function CharactersScreen() {
       name,
       race,
       power,
+      faction,
+      description,
     };
 
     setCharacters((prev) => [
@@ -87,6 +93,8 @@ export default function CharactersScreen() {
     setName('');
     setRace('');
     setPower('');
+    setFaction('');
+    setDescription('');
   }
 
   function removeCharacter(id) {
@@ -130,6 +138,26 @@ export default function CharactersScreen() {
         onChangeText={setPower}
       />
 
+      <TextInput
+        placeholder="Facção..."
+        placeholderTextColor="#666"
+        style={styles.input}
+        value={faction}
+        onChangeText={setFaction}
+      />
+
+      <TextInput
+        placeholder="Descrição..."
+        placeholderTextColor="#666"
+        style={[
+          styles.input,
+          styles.descriptionInput,
+        ]}
+        multiline
+        value={description}
+        onChangeText={setDescription}
+      />
+
       <TouchableOpacity
         style={styles.button}
         onPress={addCharacter}
@@ -161,7 +189,15 @@ export default function CharactersScreen() {
           </Text>
 
           <Text style={styles.info}>
-            Powder: {character.power}
+            Poder: {character.power}
+          </Text>
+
+          <Text style={styles.info}>
+            Facção: {character.faction}
+          </Text>
+
+          <Text style={styles.description}>
+            {character.description}
           </Text>
 
         </TouchableOpacity>
@@ -199,6 +235,11 @@ const styles = StyleSheet.create({
     borderColor: '#2A0D0D',
   },
 
+  descriptionInput: {
+    height: 120,
+    textAlignVertical: 'top',
+  },
+
   button: {
     backgroundColor: '#5E1111',
     padding: 18,
@@ -233,6 +274,12 @@ const styles = StyleSheet.create({
     color: '#B0B0B0',
     fontSize: 16,
     marginBottom: 6,
+  },
+
+  description: {
+    color: '#8E8E8E',
+    marginTop: 12,
+    lineHeight: 22,
   },
 
 });
