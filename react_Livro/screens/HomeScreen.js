@@ -55,7 +55,13 @@ export default function HomeScreen({
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.card}>
+      <TouchableOpacity
+  style={styles.card}
+
+  onPress={() =>
+    navigation.navigate('World')
+  }
+>
         <Text style={styles.cardTitle}>
           🌍 Worldbuilding
         </Text>
