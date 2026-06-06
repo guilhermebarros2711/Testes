@@ -197,17 +197,19 @@ export default function HomeScreen({
           PROGRESS
         </Text>
 
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity
+  style={styles.card}
+  onPress={() => navigation.navigate('Stats')}
+>
+  <Text style={styles.cardTitle}>
+    📊 Statistics
+  </Text>
 
-          <Text style={styles.cardTitle}>
-            📊 Statistics
-          </Text>
+  <Text style={styles.cardDescription}>
+    Palavras, capítulos e progresso geral.
+  </Text>
+</TouchableOpacity>
 
-          <Text style={styles.cardDescription}>
-            Palavras, capítulos e progresso geral.
-          </Text>
-
-        </TouchableOpacity>
 
       </View>
 
